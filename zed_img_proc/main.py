@@ -51,7 +51,7 @@ def calculate_depth_zed(marker_xy, depth_map):
 
 def main():
     # Create a Camera object
-    cam = ZEDCam(has_depth=True)
+    cam = ZEDCam(has_depth=False)
     cam.open_cam()
 
     # Create an ArucoDetector object
@@ -61,7 +61,7 @@ def main():
     key = ''
     timer = TimerTicTok()
     while key != 27 and key != ord('q'):  # Press 'Esc' to exit
-        if not cam.update_cam(left=True, depth=False, point_cloud=True):
+        if not cam.update_cam(left=True, right=True, depth=False, point_cloud=False):
             print("camera error")
             break
 
@@ -74,24 +74,27 @@ def main():
         if (tvecs is not None) :
             print(f"{tvecs}")
 
-        # # Detect ArUco markers in the right image
-        # # aruco_right.detect_bgr(right)
-        # # aruco_right.estimate_position()
-        # # right = aruco_right.drawMarkers(right)
+        # Detect ArUco markers in the right image
+        aruco_right.detect_bgr(right, estimate_pose=False)
+        ids, marker_xy_list, tvecs = aruco_right.get_xy_XYZ_info()
+        right = aruco_right.drawMarkers(right)
+        if (tvecs is not None) :
+            print(f"{tvecs}")
+
 
         # # depth
         # depth_map = cam.get_depth_map()
         # if (ids is not None) :
         #     m_info = calculate_depth_zed(marker_xy_list, depth_map)
         #     print(f"{m_info}")
-        point_cloud = cam.get_point_cloud()
-        if (ids is not None) :
-            m_info = calculate_XYZ_zed(marker_xy_list, point_cloud)
-            print(f"{m_info}")
+        # point_cloud = cam.get_point_cloud()
+        # if (ids is not None) :
+        #     m_info = calculate_XYZ_zed(marker_xy_list, point_cloud)
+        #     print(f"{m_info}")
 
         # Display the images  
         cv2.imshow("Left Image", left)
-        #cv2.imshow("Right Image", right)
+        cv2.imshow("Right Image", right)
 
         timer.update()
         timer.pprint()        
