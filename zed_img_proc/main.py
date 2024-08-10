@@ -24,8 +24,12 @@ def main():
 
         left, right = cam.get_bgr_images()
         
+        # Detect ArUco markers in the left image
         corners, ids, rejectedImgPoints = aruco_detector.detect_bgr(left)
         left = aruco_detector.drawMarkers(left, corners)
+
+        # Draw the detected markers on the right image
+        
 
         # Display the images
         cv2.imshow("Left Image", left)
