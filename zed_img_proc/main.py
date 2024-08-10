@@ -5,15 +5,15 @@ import PIL.Image as Image
 import cv2.aruco as aruco
 import time
 from .zed_utils import ZEDCam
-
-aruco_dict = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
-arucoParameters = aruco.DetectorParameters()
-detector = aruco.ArucoDetector(aruco_dict, arucoParameters)
+from .aruco_utils import ArucoDetector
 
 def main():
     # Create a Camera object
     cam = ZEDCam()
     cam.open_cam()
+
+    # Create an ArucoDetector object
+    aruco_detector = ArucoDetector()
     
     key = ''
     prev = time.time()
@@ -24,11 +24,8 @@ def main():
 
         left, right = cam.get_bgr_images()
         
-        gray_left = cv2.cvtColor(left, cv2.COLOR_BGRA2GRAY)
-
-        # aruco detection
-        corners, ids, rejectedImgPoints = detector.detectMarkers(gray_left)
-        gray_left = aruco.drawDetectedMarkers(left, corners)        
+        corners, ids, rejectedImgPoints = aruco_detector.detect_bgr(left)
+        left = aruco_detector.drawMarkers(left, corners)
 
         # Display the images
         cv2.imshow("Left Image", left)
