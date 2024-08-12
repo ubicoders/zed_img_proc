@@ -8,7 +8,7 @@ class ZEDCam:
         self.init_params.camera_fps = 60
         self.runtime_parameters = sl.RuntimeParameters()
         if has_depth:
-            self.init_params.depth_mode = sl.DEPTH_MODE.QUALITY
+            self.init_params.depth_mode = sl.DEPTH_MODE.ULTRA
             self.init_params.coordinate_units = sl.UNIT.MILLIMETER        
     
         self.image_left = sl.Mat()
