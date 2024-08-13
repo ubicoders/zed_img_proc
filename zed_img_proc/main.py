@@ -26,7 +26,7 @@ def main():
         
         # Detect ArUco markers in the left image
         aruco_left.detect_bgr(left, estimate_pose=False)
-        ids, marker_xy_list, tvecs = aruco_left.get_xy_XYZ_info()
+        ids, marker_xy_list, tvecs, tr_info = aruco_left.get_xy_XYZ_info()
         left = aruco_left.drawMarkers(left)
         if (tvecs is not None) :
             print(f"{tvecs}")

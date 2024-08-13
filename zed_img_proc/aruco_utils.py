@@ -42,6 +42,8 @@ class ArucoDetector:
         self.rvecs = None
         self.tvecs = None
         self.pos_estimate = False
+        self.marker_size = 0.155
+        self.tr_info = []
 
     def detect_bgr(self, bgr_img, estimate_pose=False):
         self.pos_estimate = estimate_pose
@@ -80,6 +82,33 @@ class ArucoDetector:
     def get_xy_XYZ_info(self):
         _, marker_xy_list = self.get_xy_info()
         return self.ids, marker_xy_list, self.tvecs
+    
+    def get_xy_XYZ_TR_info(self):
+        _, marker_xy_list, _ = self.get_xy_XYZ_info()
+        full_info = []
+        if (self.ids is None) or (self.tvecs is None) or (len(self.tvecs) == 0):
+            return self.ids, full_info
+        for i in range(len(self.ids)):
+            mid, cx, cy = marker_xy_list[i]
+            tr_info = self.get_tr_info(mid)
+            temp_info = {"id": mid, 
+                         "xy": {"x": marker_xy_list[i][1], "y": marker_xy_list[i][2]}, 
+                         "tvec": {"x": self.tvecs[i][0][0], "y": self.tvecs[i][0][1], "z": self.tvecs[i][0][2]},
+                         "dist": tr_info["dist"],
+                         "eul": tr_info["eul"]}
+            full_info.append(temp_info)
+        return self.ids, full_info
+        
+    def get_tr_info(self, id):
+        for info in self.tr_info:
+            if info["id"] == id:
+                return info
+        return None
+                         
+                         
+            
+            
+
 
     def estimate_position(self):
         if (self.camera_matrix is None) or (self.dist_coeffs is None):
@@ -88,10 +117,11 @@ class ArucoDetector:
         if (self.corners is None) or (self.ids is None):
             #print("Error: No ArUco markers detected")
             return None, None
-        marker_size = 0.172
-        self.rvecs, self.tvecs, _ = aruco.estimatePoseSingleMarkers(self.corners, marker_size, self.camera_matrix, self.dist_coeffs)
+        self.rvecs, self.tvecs, _ = aruco.estimatePoseSingleMarkers(self.corners,     self.marker_size , self.camera_matrix, self.dist_coeffs)
         for i in range(len(self.ids)):
             R, _ = cv2.Rodrigues(self.rvecs[i])
             # Calculate distance to the marker
-            self.distance = np.linalg.norm(self.tvecs[i])
-            self.eul = rotation_matrix_to_euler_angles(R)
+            distance = np.linalg.norm(self.tvecs[i])
+            eul = rotation_matrix_to_euler_angles(R)
+            temp_tr_info = {"id": self.ids[i][0], "dist": distance, "eul": {"x": eul[0], "y": eul[1], "z": eul[2]}}
+            self.tr_info.append(temp_tr_info)

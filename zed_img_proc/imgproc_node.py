@@ -7,6 +7,7 @@ from .zed_utils import ZEDCam
 from .aruco_utils import ArucoDetector
 from .detection_utils import TimerTicTok, calculate_depth_zed, calculate_XYZ_zed
 import json
+from aruco_interface.msg import StereoImageMarkers, ImageMarkers, Marker, Point2D
 
 class ZedArucoNode(Node):
     def __init__(self):
@@ -33,32 +34,34 @@ class ZedArucoNode(Node):
         self.timer = self.create_timer(0.01, self.timer_callback)
 
     def timer_callback(self):
-        if not self.cam.update_cam(left=True, right=False, depth=False, point_cloud=True):
+        if not self.cam.update_cam(left=True, right=True, depth=False, point_cloud=False):
             self.get_logger().error("Camera error")
             return
 
         left, right = self.cam.get_bgr_images()
 
         # Detect ArUco markers in the left image
-        self.aruco_left.detect_bgr(left, estimate_pose=False)
-        ids, marker_xy_list, tvecs = self.aruco_left.get_xy_XYZ_info()
-        left = self.aruco_left.drawMarkers(left)
+        self.aruco_left.detect_bgr(left, estimate_pose=True)
+        left_ids, left_full_info = self.aruco_left.get_xy_XYZ_TR_info()
 
-        # # Calculate depth for the detected markers
-        # depth_map = self.cam.get_depth_map()
-        # if ids is not None and marker_xy_list is not None:
-        #     m_info = calculate_depth_zed(marker_xy_list, depth_map)
-        #     self.publish_3d_vectors(m_info)
+        # Detect ArUco markers in the right image
+        self.aruco_right.detect_bgr(right, estimate_pose=True)
+        right_ids, right_full_info = self.aruco_right.get_xy_XYZ_TR_info()
+        
+        # # left plot
+        # left = self.aruco_left.drawMarkers(left)
+        # for i, info in enumerate(left_full_info):
+        #     print(info)
 
-        point_cloud = self.cam.get_point_cloud()
-        if (ids is not None) :
-            m_info = calculate_XYZ_zed(marker_xy_list, point_cloud)
-            for i in m_info:
-                print(json.dumps(i, indent=4))
+        # # right plot
+        # right = self.aruco_right.drawMarkers(right)
+        # for i, info in enumerate(right_full_info):
+        #     print(info)
+            
 
         # Optionally, display the images for debugging
         cv2.imshow("Left Image", left)
-        #cv2.imshow("Right Image", right)
+        cv2.imshow("Right Image", right)
         cv2.waitKey(1)
         
 
