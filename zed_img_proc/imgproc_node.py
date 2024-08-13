@@ -48,15 +48,15 @@ class ZedArucoNode(Node):
         self.aruco_right.detect_bgr(right, estimate_pose=True)
         right_ids, right_full_info = self.aruco_right.get_xy_XYZ_TR_info()
         
-        # # left plot
-        # left = self.aruco_left.drawMarkers(left)
-        # for i, info in enumerate(left_full_info):
-        #     print(info)
+        # left plot
+        left = self.aruco_left.drawMarkers(left)
+        for i, info in enumerate(left_full_info):
+            print(info)
 
-        # # right plot
-        # right = self.aruco_right.drawMarkers(right)
-        # for i, info in enumerate(right_full_info):
-        #     print(info)
+        # right plot
+        right = self.aruco_right.drawMarkers(right)
+        for i, info in enumerate(right_full_info):
+            print(info)
             
 
         # Optionally, display the images for debugging

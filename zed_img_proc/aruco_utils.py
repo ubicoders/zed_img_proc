@@ -104,11 +104,6 @@ class ArucoDetector:
             if info["id"] == id:
                 return info
         return None
-                         
-                         
-            
-            
-
 
     def estimate_position(self):
         if (self.camera_matrix is None) or (self.dist_coeffs is None):
