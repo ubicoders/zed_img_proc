@@ -90,6 +90,8 @@ class ArucoDetector:
             return self.ids, full_info
         for i in range(len(self.ids)):
             mid, cx, cy = marker_xy_list[i]
+            if (mid not in [0, 1, 2, 3, 4, 5]):
+                continue
             tr_info = self.get_tr_info(mid)
             temp_info = {"id": mid, 
                          "xy": {"x": marker_xy_list[i][1], "y": marker_xy_list[i][2]}, 
