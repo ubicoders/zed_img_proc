@@ -28,7 +28,7 @@ class ZedArucoNode(Node):
         self.tictok = TimerTicTok()
 
         # ROS 2 Publisher for 3D vector arrays
-        self.vector_pub = self.create_publisher(Float32MultiArray, 'zed/markers/vec3', 10)
+        self.aruco_full_pub = self.create_publisher(StereoImageMarkers, '/stereo_aruco', 10)
 
         # Timer for periodic callback
         self.timer = self.create_timer(0.01, self.timer_callback)
@@ -48,31 +48,63 @@ class ZedArucoNode(Node):
         self.aruco_right.detect_bgr(right, estimate_pose=True)
         right_ids, right_full_info = self.aruco_right.get_xy_XYZ_TR_info()
         
-        # left plot
-        left = self.aruco_left.drawMarkers(left)
-        for i, info in enumerate(left_full_info):
-            print(info)
+        # Pack the full info into a message
+        stereo_img_markers = self.pack_full_info(left_full_info, right_full_info)
+        self.aruco_full_pub.publish(stereo_img_markers)
+       
+       
+        ##=========================================================================================================
+        # # left plot
+        # left = self.aruco_left.drawMarkers(left)
+        # for i, info in enumerate(left_full_info):
+        #     print(info)
 
-        # right plot
-        right = self.aruco_right.drawMarkers(right)
-        for i, info in enumerate(right_full_info):
-            print(info)
-            
+        # # right plot
+        # right = self.aruco_right.drawMarkers(right)
+        # for i, info in enumerate(right_full_info):
+        #     print(info)
 
-        # Optionally, display the images for debugging
-        cv2.imshow("Left Image", left)
-        cv2.imshow("Right Image", right)
-        cv2.waitKey(1)
+        # # Optionally, display the images for debugging
+        # cv2.imshow("Left Image", left)
+        # cv2.imshow("Right Image", right)
+        # cv2.waitKey(1)
         
 
         self.tictok.update()
         self.tictok.pprint()
 
+    def pack_full_info(self, left_full_info, right_full_info):
+        left_img_markers = self.pack_markers(left_full_info)
+        left_img_markers.image_name = "left"
 
-  
+        right_img_markers = self.pack_markers(right_full_info)
+        right_img_markers.image_name = "right"
 
-    def publish_3d_vectors(self, m_info):
-        print(m_info)
+        stereo_img_markers = StereoImageMarkers()
+        stereo_img_markers.left_image = left_img_markers
+        stereo_img_markers.right_image = right_img_markers
+        return stereo_img_markers
+
+ 
+
+    def pack_markers(self, full_info):
+        img_markers = ImageMarkers()
+        img_markers.markers = []
+        for info in full_info:
+            marker = Marker()
+            marker.id = int(info["id"])
+            marker.xy.x = float(info["xy"]["x"])
+            marker.xy.y = float(info["xy"]["y"])
+            marker.tvec.x = info["tvec"]["x"]
+            marker.tvec.y = info["tvec"]["y"]
+            marker.tvec.z = info["tvec"]["z"]
+            marker.dist = info["dist"]
+            marker.eul.x = info["eul"]["x"]
+            marker.eul.y = info["eul"]["y"]
+            marker.eul.z = info["eul"]["z"]
+            # print(marker)
+            img_markers.markers.append(marker)
+        return img_markers
             
         # # Prepare the message with 3D vectors
         # msg = Float32MultiArray()
