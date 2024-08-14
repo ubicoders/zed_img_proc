@@ -23,6 +23,7 @@ class ArucoDetector:
         # corners, ids, rejectedImgPoints
         self.corners, self.ids, _ = self.detector.detectMarkers(gray_img)
         if self.ids is None or len(self.ids) == 0:
+            self.idCornerMap = {}
             return
         # make a map of ids to corners
         for i, marker_idx in enumerate(self.ids):

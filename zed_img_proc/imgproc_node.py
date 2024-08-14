@@ -23,8 +23,8 @@ class ZedArucoNode(Node):
         self.tictok = TimerTicTok()
 
         # ROS 2 Publisher for 3D vector arrays
-        self.left_aruco = self.create_publisher(ImageMarkers, '/left/arcuo', 10)
-        self.right_aruco = self.create_publisher(ImageMarkers, '/right/arcuo', 10)
+        self.pub_left_aruco = self.create_publisher(ImageMarkers, '/left/arcuo', 10)
+        self.pub_right_aruco = self.create_publisher(ImageMarkers, '/right/arcuo', 10)
 
         # Timer for periodic callback
         self.timer = self.create_timer(0.01, self.timer_callback)
@@ -39,29 +39,21 @@ class ZedArucoNode(Node):
 
         # Detect ArUco markers in the left image
         self.aruco_left.detect_bgr(left)
-        print(self.aruco_left.idCornerMap)
-        aruco_markers_left= pack_aruco(0, self.aruco_left.idCornerMap)
+
         
-        self.left_aruco.publish(aruco_markers_left)
-
-
-
         # Detect ArUco markers in the right image
         self.aruco_right.detect_bgr(right)
 
 
+        # pack and publish - left
+        self.pub_left_aruco.publish(pack_aruco(0, self.aruco_left.idCornerMap))
 
+        # pack and publish - right 
+        self.pub_right_aruco.publish(pack_aruco(1, self.aruco_right.idCornerMap))
 
-
-        
-        
-        # # Pack the full info into a message
-        # stereo_img_markers = self.pack_full_info(left_full_info, right_full_info)
-        # self.aruco_full_pub.publish(stereo_img_markers)       
-       
         ##=========================================================================================================
         # left plot
-        left = self.aruco_left.drawMarkers(left)
+        #left = self.aruco_left.drawMarkers(left)
 
         # # right plot
         # right = self.aruco_right.drawMarkers(right)
@@ -69,16 +61,13 @@ class ZedArucoNode(Node):
         #     print(info)
 
         # # Optionally, display the images for debugging
-        cv2.imshow("Left Image", left)
+        # cv2.imshow("Left Image", left)
         # cv2.imshow("Right Image", right)
         # cv2.waitKey(1)
         
 
         self.tictok.update()
         self.tictok.pprint()
-
-    
-            
 
 
 def main(args=None):

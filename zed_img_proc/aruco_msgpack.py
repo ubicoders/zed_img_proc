@@ -22,6 +22,8 @@ def pack_aruco_markers(idCornerMap):
     keys = idCornerMap.keys()
     aruco_markers = []
     for key in keys:
+        if key not in [0, 1, 2, 3, 4, 5]:
+            continue
         corners = idCornerMap[key]
         marker = pack_each_aruco(key, corners)
         aruco_markers.append(marker)
