@@ -1,4 +1,6 @@
 from setuptools import find_packages, setup
+from glob import glob
+import os
 
 package_name = 'zed_img_proc'
 
@@ -10,6 +12,8 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        # ('share/' + package_name + '/zedm', glob(os.path.join(package_name, 'zedm', '*.npz'))),
+
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -20,7 +24,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'zed_play = zed_img_proc.main:main',
+            # 'zed_play = zed_img_proc.main:main',
             'imgproc_node = zed_img_proc.imgproc_node:main',
         ],
     },
