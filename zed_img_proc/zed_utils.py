@@ -17,6 +17,7 @@ class ZEDCam:
         self.image_right = sl.Mat()
         self.depth_map = sl.Mat()
         self.point_cloud = sl.Mat()
+        self.bodies = sl.Bodies()
 
         self.body_track = body_track
             
@@ -26,7 +27,7 @@ class ZEDCam:
             print("Failed to open the ZED camera")
             return
 
-        self.runtime_parameters = sl.RuntimeParameters()
+        
 
         if self.body_track:
             body_param = sl.BodyTrackingParameters()
@@ -36,15 +37,17 @@ class ZEDCam:
             body_param.body_format = sl.BODY_FORMAT.BODY_18  # Choose the BODY_FORMAT you wish to use
             # Enable Object Detection module
             self.zed.enable_body_tracking(body_param)
-
-            self.runtime_parameters = sl.BodyTrackingRuntimeParameters()
-            self.runtime_parameters.detection_confidence_threshold = 40
+            self.body_track_runtime_parameters = sl.BodyTrackingRuntimeParameters()
+            self.body_track_runtime_parameters.detection_confidence_threshold = 40
+        else:
+            self.runtime_parameters = sl.RuntimeParameters()
     
     def update_cam(self):
-        if self.zed.grab(self.runtime_parameters) == sl.ERROR_CODE.SUCCESS:
-            return True
+        if self.body_track:
+            return self.zed.grab() == sl.ERROR_CODE.SUCCESS
         else:
-            return False
+            return self.zed.grab(self.runtime_parameters) == sl.ERROR_CODE.SUCCESS
+           
 
     def close_cam(self):
         self.zed.close()
@@ -57,11 +60,14 @@ class ZEDCam:
         self.zed.retrieve_image(self.image_right, sl.VIEW.RIGHT)
         return cv2.cvtColor(self.image_right.get_data(),  cv2.COLOR_BGRA2BGR)
 
+    def get_body_tracking(self):
+        self.zed.retrieve_bodies(self.bodies, self.body_track_runtime_parameters)
+        return self.bodies
+
     def get_depth(self):
         # pyzed doesn't support GPU
         self.zed.retrieve_image(self.depth_image_zed, sl.VIEW.DEPTH)
         return self.depth_image_zed
-
 
     def get_point_cloud(self):
         self.zed.retrieve_measure(self.point_cloud, sl.MEASURE.XYZRGBA)

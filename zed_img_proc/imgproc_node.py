@@ -12,7 +12,7 @@ class ZedArucoNode(Node):
     def __init__(self):
         super().__init__('zed_node')
         # Create a Camera object
-        self.cam = ZEDCam()
+        self.cam = ZEDCam(body_track=True)
         self.cam.open_cam()
 
         # Create ArucoDetector objects
@@ -50,6 +50,11 @@ class ZedArucoNode(Node):
 
         # pack and publish - right 
         self.pub_right_aruco.publish(pack_aruco(1, self.aruco_right.idCornerMap))
+
+        # body tracking
+        bodies = self.cam.get_body_tracking()
+        for body in bodies.body_list:
+            print(body.id, body.position)
 
         ##=========================================================================================================
         # left plot
