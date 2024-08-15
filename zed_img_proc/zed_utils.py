@@ -10,8 +10,8 @@ class ZEDCam:
         self.init_params.camera_fps = 60       
         
         # depth mode config
-        self.init_params.depth_mode = sl.DEPTH_MODE.ULTRA
-        self.init_params.coordinate_units = sl.UNIT.MILLIMETER      
+        self.init_params.depth_mode = sl.DEPTH_MODE.PERFORMANCE
+        self.init_params.coordinate_units = sl.UNIT.METER      
         self.init_params.coordinate_system = sl.COORDINATE_SYSTEM.RIGHT_HANDED_Y_UP  
     
         self.image_left = sl.Mat()

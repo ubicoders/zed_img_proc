@@ -1,3 +1,4 @@
+import cv2
 import rclpy
 from rclpy.node import Node
 import numpy as np
@@ -6,7 +7,9 @@ from .aruco2d_utils import ArucoDetector
 from .perf_utils import TimerTicTok
 from aruco_interface.msg import ImageMarkers
 from .aruco_msgpack import pack_aruco
-import cv2
+from .body_msgpack import pack_body
+from skeleton_interface.msg import BodyKeyPoints
+
 
 class ZedArucoNode(Node):
     def __init__(self):
@@ -25,6 +28,7 @@ class ZedArucoNode(Node):
         # ROS 2 Publisher for 3D vector arrays
         self.pub_left_aruco = self.create_publisher(ImageMarkers, '/left/arcuo', 10)
         self.pub_right_aruco = self.create_publisher(ImageMarkers, '/right/arcuo', 10)
+        self.pub_body = self.create_publisher(BodyKeyPoints, '/body_keypoints', 10)
 
         # Timer for periodic callback
         self.timer = self.create_timer(0.01, self.timer_callback)
@@ -53,8 +57,16 @@ class ZedArucoNode(Node):
 
         # body tracking
         bodies = self.cam.get_body_tracking()
+        
         for body in bodies.body_list:
-            print(body.id, body.position, body.keypoint_2d)
+            body_msg = pack_body(body)
+            self.pub_body.publish(body_msg)
+            # only 1 body for now
+            break
+    
+            
+            # print(body.keypoints_covariance)
+        # skeletal_msg = pack_body()
 
         ##=========================================================================================================
         # left plot
