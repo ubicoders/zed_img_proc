@@ -29,7 +29,7 @@ class ArucoDetector:
         self.detector = aruco.ArucoDetector(aruco_dict, arucoParameters)
 
         self.pose_on = pose_on  
-        self.marker_size = 0.170
+        self.marker_size = 0.160
         self.corners = None
         self.ids = None
         self.aruco_info = {}
@@ -95,7 +95,6 @@ class ArucoDetector:
         for mid in self.get_all_ids():
             center = self.get_center(mid)
             self.aruco_info[mid]["center"] = center
-       
     
     def get_center(self, mid):
         if mid in self.get_all_ids():
