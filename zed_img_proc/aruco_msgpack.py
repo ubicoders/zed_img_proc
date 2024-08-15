@@ -1,20 +1,24 @@
 from aruco_interface.msg import ImageMarkers, ArucoMarker, Point2D
 from std_msgs.msg import Header
+from std_msgs.msg import String
 import rclpy
 
-def pack_aruco(cam_idx, idCornerMap):
+def pack_aruco(serial_number, left_idCornerMap, right_idCornerMap):
     # Initialize a Header message
     header = Header()
 
     # Populate the Header fields
     header.stamp = rclpy.clock.Clock().now().to_msg()  # Set the timestamp to the current time
-    header.frame_id = "base_link"  # Set the frame_id to some meaningful frame
+    header.frame_id = "zed_frame"  # Set the frame_id to some meaningful frame
 
     # Initialize an ImageMarkers message
     image_markers = ImageMarkers()
     image_markers.header = header
-    image_markers.cam_idx = cam_idx
-    image_markers.aruco_markers = pack_aruco_markers(idCornerMap)
+    cam_name_msg = String()
+    cam_name_msg.data = f"zed_{serial_number}"
+    image_markers.cam_name = cam_name_msg
+    image_markers.aruco_markers_0 = pack_aruco_markers(left_idCornerMap)
+    image_markers.aruco_markers_1 = pack_aruco_markers(right_idCornerMap)
     return image_markers
 
 

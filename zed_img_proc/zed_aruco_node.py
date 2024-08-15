@@ -10,12 +10,13 @@ from .aruco_msgpack import pack_aruco
 from .body_msgpack import pack_body
 from skeleton_interface.msg import BodyKeyPoints
 
+ZED_SERIAL_NUMBER = 17437
 
 class ZedArucoNode(Node):
     def __init__(self):
         super().__init__('zed_node')
         # Create a Camera object
-        self.cam = ZEDCam(body_track=False, serial_number=17437)
+        self.cam = ZEDCam(body_track=False, serial_number=ZED_SERIAL_NUMBER)
         self.cam.open_cam()
 
         # Create ArucoDetector objects
@@ -26,9 +27,7 @@ class ZedArucoNode(Node):
         self.tictok = TimerTicTok()
 
         # ROS 2 Publisher for 3D vector arrays
-        self.pub_left_aruco = self.create_publisher(ImageMarkers, '/left/arcuo', 10)
-        self.pub_right_aruco = self.create_publisher(ImageMarkers, '/right/arcuo', 10)
-        self.pub_body = self.create_publisher(BodyKeyPoints, '/body_keypoints', 10)
+        self.pub_aruco = self.create_publisher(ImageMarkers, '/cam/aruco', 10)
 
         # Timer for periodic callback
         self.timer = self.create_timer(0.01, self.timer_callback)
@@ -43,13 +42,12 @@ class ZedArucoNode(Node):
 
         # Detect ArUco markers in the left image
         self.aruco_left.detect_bgr(left)
-         # pack and publish - left
-        self.pub_left_aruco.publish(pack_aruco(0, self.aruco_left.idCornerMap))
         
         # Detect ArUco markers in the right image
         self.aruco_right.detect_bgr(right)
-        # pack and publish - right
-        self.pub_right_aruco.publish(pack_aruco(1, self.aruco_right.idCornerMap))
+
+        # pack and publish all
+        self.pub_aruco.publish(pack_aruco(ZED_SERIAL_NUMBER, self.aruco_left.idCornerMap, self.aruco_right.idCornerMap))
 
         ##=========================================================================================================
         # # left plot
