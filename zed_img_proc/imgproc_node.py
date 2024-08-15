@@ -43,17 +43,17 @@ class ZedArucoNode(Node):
 
         # Detect ArUco markers in the left image
         self.aruco_left.detect_bgr(left)
-
+        self.pub_left_aruco.publish(pack_aruco(0, self.aruco_left.idCornerMap))
         
         # Detect ArUco markers in the right image
         self.aruco_right.detect_bgr(right)
-
+        self.pub_right_aruco.publish(pack_aruco(1, self.aruco_right.idCornerMap))
 
         # pack and publish - left
-        self.pub_left_aruco.publish(pack_aruco(0, self.aruco_left.idCornerMap))
+        
 
         # pack and publish - right 
-        self.pub_right_aruco.publish(pack_aruco(1, self.aruco_right.idCornerMap))
+        
 
         # body tracking
         bodies = self.cam.get_body_tracking()
@@ -63,13 +63,9 @@ class ZedArucoNode(Node):
             self.pub_body.publish(body_msg)
             # only 1 body for now
             break
-    
-            
-            # print(body.keypoints_covariance)
-        # skeletal_msg = pack_body()
 
         ##=========================================================================================================
-        # left plot
+        # # left plot
         #left = self.aruco_left.drawMarkers(left)
 
         # # right plot
