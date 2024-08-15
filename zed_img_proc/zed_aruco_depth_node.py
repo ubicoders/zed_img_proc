@@ -17,7 +17,7 @@ class ZedArucoNode(Node):
     def __init__(self):
         super().__init__('zed_aruco_with_depth')
 
-        self.stereo_on = True
+        self.stereo_on = False
 
         # Create a Camera object
         self.cam = ZEDCam(body_track=False, serial_number=ZED_SERIAL_NUMBER)
