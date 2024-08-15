@@ -46,7 +46,7 @@ class ZedArucoNode(Node):
         self.aruco_left.update_center()
         for mid in self.aruco_left.get_ids():
             center = self.aruco_left.idCenterMap[mid]
-            self.get_logger().info(f"Marker {mid} center: {center}")
+            # self.get_logger().info(f"Marker {mid} center: {center}")
             _, xyz = point_cloud.get_value(int(center[0]), int(center[1]))
             xyz = xyz[ :-1]
             self.aruco_left.update_idXYZ(mid, xyz)
