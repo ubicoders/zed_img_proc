@@ -1,6 +1,6 @@
 import cv2
 import pyzed.sl as sl
-
+import numpy  as np
 # 17437, 14100309
 
 
@@ -52,7 +52,7 @@ class ZEDCam:
             return self.zed.grab() == sl.ERROR_CODE.SUCCESS
         else:
             return self.zed.grab(self.runtime_parameters) == sl.ERROR_CODE.SUCCESS
-           
+
 
     def close_cam(self):
         self.zed.close()
@@ -77,3 +77,9 @@ class ZEDCam:
     def get_point_cloud(self):
         self.zed.retrieve_measure(self.point_cloud, sl.MEASURE.XYZRGBA)
         return self.point_cloud
+    
+    def clean_xyz(self, xyz):
+        xyz = xyz[ :-1]
+        if (xyz[0] is np.nan) or (xyz[0] is np.inf) or (xyz[0] is -np.inf):
+            xyz = [0, 0, 0]
+        return xyz

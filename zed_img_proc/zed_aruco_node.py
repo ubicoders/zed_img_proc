@@ -3,7 +3,7 @@ import rclpy
 from rclpy.node import Node
 import numpy as np
 from .zed_utils import ZEDCam
-from .aruco2d_utils import ArucoDetector
+from .aruco_utils import ArucoDetector
 from .perf_utils import TimerTicTok
 from aruco_interface.msg import ImageMarkers
 from .aruco_msgpack import pack_aruco
