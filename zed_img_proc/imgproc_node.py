@@ -54,7 +54,7 @@ class ZedArucoNode(Node):
         # body tracking
         bodies = self.cam.get_body_tracking()
         for body in bodies.body_list:
-            print(body.id, body.position)
+            print(body.id, body.position, body.keypoint_2d)
 
         ##=========================================================================================================
         # left plot

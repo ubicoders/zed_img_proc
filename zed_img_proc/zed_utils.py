@@ -10,8 +10,9 @@ class ZEDCam:
         self.init_params.camera_fps = 60       
         
         # depth mode config
-        self.init_params.depth_mode = sl.DEPTH_MODE.PERFORMANCE
-        self.init_params.coordinate_units = sl.UNIT.MILLIMETER        
+        self.init_params.depth_mode = sl.DEPTH_MODE.ULTRA
+        self.init_params.coordinate_units = sl.UNIT.MILLIMETER      
+        self.init_params.coordinate_system = sl.COORDINATE_SYSTEM.RIGHT_HANDED_Y_UP  
     
         self.image_left = sl.Mat()
         self.image_right = sl.Mat()
@@ -25,11 +26,12 @@ class ZEDCam:
     def open_cam(self):
         if self.zed.open(self.init_params) != sl.ERROR_CODE.SUCCESS:
             print("Failed to open the ZED camera")
-            return
-
-        
+            return       
 
         if self.body_track:
+            positional_tracking_parameters = sl.PositionalTrackingParameters()
+            self.zed.enable_positional_tracking(positional_tracking_parameters)
+
             body_param = sl.BodyTrackingParameters()
             body_param.enable_tracking = True                # Track people across images flow
             body_param.enable_body_fitting = False            # Smooth skeleton move
