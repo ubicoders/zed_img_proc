@@ -44,6 +44,8 @@ class ZedArucoNode(Node):
         # Detect ArUco markers in the left image
         self.aruco_left.detect_bgr(left)
         self.aruco_left.update_center()
+        if (len(self.aruco_left.get_ids()) > 0):
+            self.get_logger().info(f"{len(self.aruco_left.get_ids()) } markers detected")
         for mid in self.aruco_left.get_ids():
             center = self.aruco_left.idCenterMap[mid]
             # self.get_logger().info(f"Marker {mid} center: {center}")
