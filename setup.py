@@ -25,7 +25,8 @@ setup(
     entry_points={
         'console_scripts': [
             # 'zed_play = zed_img_proc.main:main',
-            'imgproc_node = zed_img_proc.imgproc_node:main',
+            "skeletal_node = zed_img_proc.skeletal_node:main",
+            'aruco_node = zed_img_proc.aruco_node:main',
         ],
     },
 )

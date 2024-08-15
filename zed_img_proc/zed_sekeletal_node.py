@@ -11,11 +11,11 @@ from .body_msgpack import pack_body
 from skeleton_interface.msg import BodyKeyPoints
 
 
-class ZedArucoNode(Node):
+class ZED_SEKELETAL_NODE(Node):
     def __init__(self):
         super().__init__('zed_node')
         # Create a Camera object
-        self.cam = ZEDCam(body_track=True)
+        self.cam = ZEDCam(body_track=True , serial_number=14100309)
         self.cam.open_cam()
 
         # Create ArucoDetector objects
@@ -85,7 +85,7 @@ class ZedArucoNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = ZedArucoNode()
+    node = ZED_SEKELETAL_NODE()
     rclpy.spin(node)
     node.cam.close_cam()
     node.destroy_node()

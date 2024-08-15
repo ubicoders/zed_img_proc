@@ -1,12 +1,15 @@
 import cv2
 import pyzed.sl as sl
 
+# 17437, 14100309
+
+
 class ZEDCam:
-    def __init__(self, body_track = False ):
+    def __init__(self, body_track = False , serial_number=14100309):
         self.zed = sl.Camera()
 
         self.init_params = sl.InitParameters()
-        self.init_params.set_from_serial_number(14100309)
+        self.init_params.set_from_serial_number(serial_number)
         self.init_params.camera_resolution = sl.RESOLUTION.HD720
         self.init_params.camera_fps = 60       
         
