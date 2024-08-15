@@ -41,7 +41,7 @@ class ArucoDetector:
         self.detect_gray(gray_img)
 
     def detect_gray(self, gray_img):
-        self.idCornerMap = {}
+        self.aruco_info = {}
         # corners, ids, rejectedImgPoints
         self.corners, self.ids, _ = self.detector.detectMarkers(gray_img)
         if self.ids is None or len(self.ids) == 0:

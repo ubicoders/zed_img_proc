@@ -80,6 +80,8 @@ class ZEDCam:
     
     def clean_xyz(self, xyz):
         xyz = xyz[ :-1]
-        if (xyz[0] is np.nan) or (xyz[0] is np.inf) or (xyz[0] is -np.inf):
-            xyz = [0, 0, 0]
+        if (xyz[0] is np.nan) or (xyz[0] is np.inf) or (xyz[0] is -np.inf) or \
+           (xyz[1] is np.nan) or (xyz[1] is np.inf) or (xyz[1] is -np.inf) or\
+           (xyz[2] is np.nan) or (xyz[2] is np.inf) or (xyz[2] is -np.inf):
+            xyz = [0.0, 0.0, 0.0]
         return xyz
