@@ -33,19 +33,29 @@ class ZedArucoNode(Node):
         self.timer = self.create_timer(0.01, self.timer_callback)
 
     def timer_callback(self):
+
+
         if not self.cam.update_cam():
             self.get_logger().error("Camera error")
             return
 
+        self.tictok.update()
+        self.tictok.pprint()
+
+
         left = self.cam.get_bgr_left()
-        point_cloud = self.cam.get_point_cloud()
-        
+        point_cloud = self.cam.get_point_cloud()        
 
         # Detect ArUco markers in the left image
         self.aruco_left.detect_bgr(left)
         self.aruco_left.update_center()
-        if (len(self.aruco_left.get_ids()) > 0):
-            self.get_logger().info(f"{len(self.aruco_left.get_ids()) } markers detected")
+        num_markers = len(self.aruco_left.get_ids())
+        if (num_markers == 0):
+            return
+        else:
+            self.get_logger().info(f"Detected {num_markers} markers in the left image")
+        
+        # Get the 3D coordinates of the markers
         for mid in self.aruco_left.get_ids():
             center = self.aruco_left.idCenterMap[mid]
             # self.get_logger().info(f"Marker {mid} center: {center}")
@@ -60,13 +70,11 @@ class ZedArucoNode(Node):
         # # # left plot
         # left = self.aruco_left.drawMarkers(left)
 
-
         # # # Optionally, display the images for debugging
         # cv2.imshow("Left Image", left)
         # cv2.waitKey(1)
 
-        self.tictok.update()
-        self.tictok.pprint()
+        
 
 
 def main(args=None):
