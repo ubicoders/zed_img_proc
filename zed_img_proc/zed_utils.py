@@ -29,7 +29,7 @@ class ZEDCam:
     def open_cam(self):
         if self.zed.open(self.init_params) != sl.ERROR_CODE.SUCCESS:
             print("Failed to open the ZED camera")
-            return       
+            return
 
         if self.body_track:
             positional_tracking_parameters = sl.PositionalTrackingParameters()
@@ -71,8 +71,8 @@ class ZEDCam:
 
     def get_depth(self):
         # pyzed doesn't support GPU
-        self.zed.retrieve_image(self.depth_image_zed, sl.VIEW.DEPTH)
-        return self.depth_image_zed
+        self.zed.retrieve_image(self.depth_map, sl.VIEW.DEPTH)
+        return self.depth_map
 
     def get_point_cloud(self):
         self.zed.retrieve_measure(self.point_cloud, sl.MEASURE.XYZRGBA)

@@ -13,21 +13,15 @@ from skeleton_interface.msg import BodyKeyPoints
 
 class ZED_SEKELETAL_NODE(Node):
     def __init__(self):
-        super().__init__('zed_node')
+        super().__init__('zed_skeletal_node')
         # Create a Camera object
         self.cam = ZEDCam(body_track=True , serial_number=14100309)
         self.cam.open_cam()
-
-        # Create ArucoDetector objects
-        self.aruco_left = ArucoDetector()
-        self.aruco_right = ArucoDetector()
 
         # tic-tok timer
         self.tictok = TimerTicTok()
 
         # ROS 2 Publisher for 3D vector arrays
-        self.pub_left_aruco = self.create_publisher(ImageMarkers, '/left/arcuo', 10)
-        self.pub_right_aruco = self.create_publisher(ImageMarkers, '/right/arcuo', 10)
         self.pub_body = self.create_publisher(BodyKeyPoints, '/body_keypoints', 10)
 
         # Timer for periodic callback
@@ -48,14 +42,6 @@ class ZED_SEKELETAL_NODE(Node):
             break
 
         ##=========================================================================================================
-        # # left plot
-        #left = self.aruco_left.drawMarkers(left)
-
-        # # right plot
-        # right = self.aruco_right.drawMarkers(right)
-        # for i, info in enumerate(right_full_info):
-        #     print(info)
-
         # # Optionally, display the images for debugging
         # cv2.imshow("Left Image", left)
         # cv2.imshow("Right Image", right)

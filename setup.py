@@ -27,6 +27,7 @@ setup(
             # 'zed_play = zed_img_proc.main:main',
             "skeletal_node = zed_img_proc.zed_skeletal_node:main",
             'aruco_node = zed_img_proc.zed_aruco_node:main',
+            'aruco_depth_node = zed_img_proc.zed_aruco_depth_node:main',
         ],
     },
 )

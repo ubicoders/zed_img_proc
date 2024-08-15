@@ -14,7 +14,7 @@ ZED_SERIAL_NUMBER = 17437
 
 class ZedArucoNode(Node):
     def __init__(self):
-        super().__init__('zed_aruco_stereo_node')
+        super().__init__('zed_aruco_with_depth')
         # Create a Camera object
         self.cam = ZEDCam(body_track=False, serial_number=ZED_SERIAL_NUMBER)
         self.cam.open_cam()
@@ -27,9 +27,7 @@ class ZedArucoNode(Node):
         self.tictok = TimerTicTok()
 
         # ROS 2 Publisher for 3D vector arrays
-        self.pub_aruco = self.create_publisher(ImageMarkers, '/cam/aruco', 10)
-        
-        
+        self.pub_aruco = self.create_publisher(ImageMarkers, '/cam/aruco_depth', 10)
 
         # Timer for periodic callback
         self.timer = self.create_timer(0.01, self.timer_callback)
@@ -40,30 +38,30 @@ class ZedArucoNode(Node):
             return
 
         left = self.cam.get_bgr_left()
-        right = self.cam.get_bgr_right()
+        point_cloud = self.cam.get_point_cloud()
+        
 
         # Detect ArUco markers in the left image
         self.aruco_left.detect_bgr(left)
+        self.aruco_left.update_center()
+        for mid in self.aruco_left.get_ids():
+            center = self.aruco_left.idCenterMap[mid]
+            self.get_logger().info(f"Marker {mid} center: {center}")
+            _, xyz = point_cloud.get_value(int(center[0]), int(center[1]))
+            xyz = xyz[ :-1]
+            self.aruco_left.update_idXYZ(mid, xyz)
         
-        # Detect ArUco markers in the right image
-        self.aruco_right.detect_bgr(right)
-
         # pack and publish all
-        self.pub_aruco.publish(pack_aruco(ZED_SERIAL_NUMBER, self.aruco_left.idCornerMap, self.aruco_right.idCornerMap))
+        self.pub_aruco.publish(pack_aruco(ZED_SERIAL_NUMBER, self.aruco_left.idCornerMap, {}, idXYZMap=self.aruco_left.idXYZMap))
 
         ##=========================================================================================================
         # # left plot
-        #left = self.aruco_left.drawMarkers(left)
+        left = self.aruco_left.drawMarkers(left)
 
-        # # right plot
-        # right = self.aruco_right.drawMarkers(right)
-        # for i, info in enumerate(right_full_info):
-        #     print(info)
 
         # # Optionally, display the images for debugging
-        # cv2.imshow("Left Image", left)
-        # cv2.imshow("Right Image", right)
-        # cv2.waitKey(1)
+        cv2.imshow("Left Image", left)
+        cv2.waitKey(1)
 
         self.tictok.update()
         self.tictok.pprint()
