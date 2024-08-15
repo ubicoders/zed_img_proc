@@ -38,7 +38,7 @@ class ZedArucoNode(Node):
             self.get_logger().error("Camera error")
             return
 
-        # left = self.cam.get_bgr_left()
+        #left = self.cam.get_bgr_left()
         # right = self.cam.get_bgr_right()
 
         # Detect ArUco markers in the left image
