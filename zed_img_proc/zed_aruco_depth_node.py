@@ -55,13 +55,13 @@ class ZedArucoNode(Node):
         self.pub_aruco.publish(pack_aruco(ZED_SERIAL_NUMBER, self.aruco_left.idCornerMap, {}, idXYZMap=self.aruco_left.idXYZMap))
 
         ##=========================================================================================================
-        # # left plot
-        left = self.aruco_left.drawMarkers(left)
+        # # # left plot
+        # left = self.aruco_left.drawMarkers(left)
 
 
-        # # Optionally, display the images for debugging
-        cv2.imshow("Left Image", left)
-        cv2.waitKey(1)
+        # # # Optionally, display the images for debugging
+        # cv2.imshow("Left Image", left)
+        # cv2.waitKey(1)
 
         self.tictok.update()
         self.tictok.pprint()
