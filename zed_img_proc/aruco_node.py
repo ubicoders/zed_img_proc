@@ -15,7 +15,7 @@ class ZedArucoNode(Node):
     def __init__(self):
         super().__init__('zed_node')
         # Create a Camera object
-        self.cam = ZEDCam(body_track=True, serial_number=17437)
+        self.cam = ZEDCam(body_track=False, serial_number=17437)
         self.cam.open_cam()
 
         # Create ArucoDetector objects
@@ -38,16 +38,16 @@ class ZedArucoNode(Node):
             self.get_logger().error("Camera error")
             return
 
-        #left = self.cam.get_bgr_left()
-        # right = self.cam.get_bgr_right()
+        left = self.cam.get_bgr_left()
+        right = self.cam.get_bgr_right()
 
         # Detect ArUco markers in the left image
-        # self.aruco_left.detect_bgr(left)
-        # self.pub_left_aruco.publish(pack_aruco(0, self.aruco_left.idCornerMap))
+        self.aruco_left.detect_bgr(left)
+        self.pub_left_aruco.publish(pack_aruco(0, self.aruco_left.idCornerMap))
         
         # Detect ArUco markers in the right image
-        # self.aruco_right.detect_bgr(right)
-        # self.pub_right_aruco.publish(pack_aruco(1, self.aruco_right.idCornerMap))
+        self.aruco_right.detect_bgr(right)
+        self.pub_right_aruco.publish(pack_aruco(1, self.aruco_right.idCornerMap))
 
         # pack and publish - left
         
@@ -56,13 +56,13 @@ class ZedArucoNode(Node):
         
 
         # body tracking
-        bodies = self.cam.get_body_tracking()
+        # bodies = self.cam.get_body_tracking()
         
-        for body in bodies.body_list:
-            body_msg = pack_body(body)
-            self.pub_body.publish(body_msg)
-            # only 1 body for now
-            break
+        # for body in bodies.body_list:
+        #     body_msg = pack_body(body)
+        #     self.pub_body.publish(body_msg)
+        #     # only 1 body for now
+        #     break
 
         ##=========================================================================================================
         # # left plot
