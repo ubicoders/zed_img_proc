@@ -6,6 +6,7 @@ class ZEDCam:
         self.zed = sl.Camera()
 
         self.init_params = sl.InitParameters()
+        self.init_params
         self.init_params.camera_resolution = sl.RESOLUTION.HD720
         self.init_params.camera_fps = 60       
         
