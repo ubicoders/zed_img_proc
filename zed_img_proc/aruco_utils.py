@@ -75,6 +75,9 @@ class ArucoDetector:
             # Calculate distance to the marker
             distance = np.linalg.norm(self.tvecs[i])
             eul = rotation_matrix_to_euler_angles(R)
+            eul[0] += np.pi
+            # (-np.pi to np.pi)
+            eul[0] = (eul[0] + np.pi) % (2 * np.pi) - np.pi
             self.aruco_info[mid]["tvec"] = self.tvecs[i][0]
             self.aruco_info[mid]["eul"] = eul
             # self.idTRMap[self.ids[i][0]] = {"tvec": self.tvecs[i], "eul": eul}
