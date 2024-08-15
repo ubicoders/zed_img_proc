@@ -23,7 +23,6 @@ class ZEDCam:
         self.depth_map = sl.Mat()
         self.point_cloud = sl.Mat()
         self.bodies = sl.Bodies()
-
         self.body_track = body_track
             
 

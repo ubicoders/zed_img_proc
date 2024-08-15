@@ -38,23 +38,6 @@ class ZED_SEKELETAL_NODE(Node):
             self.get_logger().error("Camera error")
             return
 
-        #left = self.cam.get_bgr_left()
-        # right = self.cam.get_bgr_right()
-
-        # Detect ArUco markers in the left image
-        # self.aruco_left.detect_bgr(left)
-        # self.pub_left_aruco.publish(pack_aruco(0, self.aruco_left.idCornerMap))
-        
-        # Detect ArUco markers in the right image
-        # self.aruco_right.detect_bgr(right)
-        # self.pub_right_aruco.publish(pack_aruco(1, self.aruco_right.idCornerMap))
-
-        # pack and publish - left
-        
-
-        # pack and publish - right 
-        
-
         # body tracking
         bodies = self.cam.get_body_tracking()
         

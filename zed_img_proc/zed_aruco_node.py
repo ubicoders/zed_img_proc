@@ -43,26 +43,13 @@ class ZedArucoNode(Node):
 
         # Detect ArUco markers in the left image
         self.aruco_left.detect_bgr(left)
+         # pack and publish - left
         self.pub_left_aruco.publish(pack_aruco(0, self.aruco_left.idCornerMap))
         
         # Detect ArUco markers in the right image
         self.aruco_right.detect_bgr(right)
+        # pack and publish - right
         self.pub_right_aruco.publish(pack_aruco(1, self.aruco_right.idCornerMap))
-
-        # pack and publish - left
-        
-
-        # pack and publish - right 
-        
-
-        # body tracking
-        # bodies = self.cam.get_body_tracking()
-        
-        # for body in bodies.body_list:
-        #     body_msg = pack_body(body)
-        #     self.pub_body.publish(body_msg)
-        #     # only 1 body for now
-        #     break
 
         ##=========================================================================================================
         # # left plot
@@ -77,7 +64,6 @@ class ZedArucoNode(Node):
         # cv2.imshow("Left Image", left)
         # cv2.imshow("Right Image", right)
         # cv2.waitKey(1)
-        
 
         self.tictok.update()
         self.tictok.pprint()
